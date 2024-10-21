@@ -36,6 +36,7 @@ def test_add_restaurant_urls(setup_database):
 
     session.close()
 
+@patch('project_config.RESTAURANT_URL', 'https://www.debuik.nl/rotterdam/zoek/restaurant/-1-stad-2-Rotterdam-1-verder-2-All-you-can-eat')
 def test_add_restaurants(setup_database):
     session = Session()
 
