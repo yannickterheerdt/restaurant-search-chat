@@ -1,0 +1,8 @@
+/.pytest_cache
+/.venv
+/chromedriver
+/explore.ipynb
+/main.ipynb
+/restaurants.db
+/test.db
+/__pycache__
