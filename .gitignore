@@ -162,4 +162,3 @@ cython_debug/
 # Project specific ignores
 *.ipynb
 *.db
-*.exe
