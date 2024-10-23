@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from src.data import Base, RestaurantURL, RestaurantData, RestaurantContent, RestaurantSummary
 from unittest.mock import patch
+from config import settings
 
 TEST_DATABASE_URL = "sqlite:///test.db"
 engine = create_engine(TEST_DATABASE_URL)
@@ -17,7 +18,7 @@ def setup_database():
     # Drop tables after tests
     Base.metadata.drop_all(engine)
 
-@patch('project_config.RESTAURANT_URL', 'https://www.debuik.nl/rotterdam/zoek/restaurant/-1-stad-2-Rotterdam-1-verder-2-All-you-can-eat')
+@patch.object(settings, 'RESTAURANT_URL', new="https://www.debuik.nl/rotterdam/zoek/restaurant/-1-stad-2-Rotterdam-1-verder-2-All-you-can-eat")
 def test_add_restaurant_urls(setup_database):
     session = Session()
     add_restaurant_urls(session)
@@ -36,7 +37,7 @@ def test_add_restaurant_urls(setup_database):
 
     session.close()
 
-@patch('project_config.RESTAURANT_URL', 'https://www.debuik.nl/rotterdam/zoek/restaurant/-1-stad-2-Rotterdam-1-verder-2-All-you-can-eat')
+@patch.object(settings, 'RESTAURANT_URL', new="https://www.debuik.nl/rotterdam/zoek/restaurant/-1-stad-2-Rotterdam-1-verder-2-All-you-can-eat")
 def test_add_restaurants(setup_database):
     session = Session()
 

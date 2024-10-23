@@ -1,14 +1,14 @@
-import project_config
+from config import settings
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
 def get_page_source_urls() -> str:
-    cService = webdriver.ChromeService(executable_path=project_config.CHROMEDRIVE_PATH)
+    cService = webdriver.ChromeService(executable_path=settings.CHROMEDRIVE_PATH)
     driver = webdriver.Chrome(service=cService)
     
-    driver.get(project_config.RESTAURANT_URL)
+    driver.get(settings.RESTAURANT_URL)
     
     try:
         driver.find_element(By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll").click()
@@ -30,7 +30,7 @@ def get_page_source_urls() -> str:
 
 def get_page_source_restaurant(url: str) -> str:
     options = webdriver.ChromeOptions()
-    cService = webdriver.ChromeService(executable_path=project_config.CHROMEDRIVE_PATH)
+    cService = webdriver.ChromeService(executable_path=settings.CHROMEDRIVE_PATH)
 
     prefs = {
         'profile.default_content_setting_values': {
@@ -47,7 +47,7 @@ def get_page_source_restaurant(url: str) -> str:
             service=cService,
             options=options
     )
-    driver.get(project_config.BASE_URL + url)
+    driver.get(settings.BASE_URL + url)
 
     page_source = driver.page_source
 

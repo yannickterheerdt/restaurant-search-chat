@@ -162,3 +162,5 @@ cython_debug/
 # Project specific ignores
 *.ipynb
 *.db
+# Ignore dynaconf secret files
+.secrets.*

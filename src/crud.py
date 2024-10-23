@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.engine import Engine
 import pandas as pd
-import project_config
+from config import settings
 from src.llm import generate_summaries
 from src.utils import splicegen
 
@@ -37,7 +37,7 @@ def add_summaries(session: Session, engine: Engine) -> None:
     df_grouped = df.groupby('name')['content'].apply(' '.join).reset_index()
     df_grouped = df_grouped[:10]
 
-    maxchars = project_config.MAX_TOKENS
+    maxchars = settings.MAX_TOKENS
     for index in splicegen(maxchars, df_grouped['content'].tolist()):
         df_grouped_index = df_grouped.iloc[index]
         names = df_grouped_index['name'].tolist()
