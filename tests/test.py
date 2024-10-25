@@ -1,8 +1,8 @@
 import pytest
-from src.crud import add_restaurant_urls, add_restaurants, add_summaries
+from data.crud import add_restaurant_urls, add_restaurants, add_summaries
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from src.data import Base, RestaurantURL, RestaurantData, RestaurantContent, RestaurantSummary
+from data.scheme import Base, RestaurantURL, RestaurantData, RestaurantContent, RestaurantSummary
 from unittest.mock import patch
 from config import settings
 
@@ -34,7 +34,7 @@ def test_add_restaurant_urls(setup_database):
     assert result[1].name == "Rozey"
     assert result[1].content_url == "/rotterdam/restaurant/rozey"
     assert result[1].image_url == "https://www.debuik.nl/fp/vhfkMj4R4XK8zCdgCQog/convert?&w=2660&h=1290&fit=crop"
-
+    
     session.close()
 
 @patch.object(settings, 'RESTAURANT_URL', new="https://www.debuik.nl/rotterdam/zoek/restaurant/-1-stad-2-Rotterdam-1-verder-2-All-you-can-eat")
@@ -81,6 +81,7 @@ def test_add_restaurants(setup_database):
 
     session.close()
 
+@patch.object(settings, 'RESTAURANT_URL', new="https://www.debuik.nl/rotterdam/zoek/restaurant/-1-stad-2-Rotterdam-1-verder-2-All-you-can-eat")
 def test_add_summaries(setup_database):
     session = Session()
 

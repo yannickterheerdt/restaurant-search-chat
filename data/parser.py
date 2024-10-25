@@ -1,6 +1,22 @@
 from parsel import Selector
-from src.webdriver import get_page_source_urls, get_page_source_restaurant
-from src.utils import join_strings, get_query
+from .webdriver import get_page_source_urls, get_page_source_restaurant
+    
+def join_strings(strs: list[str]) -> str | None:
+    has_non_none = any(x is not None for x in strs)
+    if has_non_none:
+        return ' '.join(s for s in strs if s is not None)
+    else:
+        return None
+        
+def get_query(content: Selector, query: str, sep: str = ' ') -> str | list[str] | None:
+    response = content.xpath(query).getall()
+    if not response:
+        return None
+    
+    if sep:
+        return sep.join(response)
+    else: 
+        return response
     
 class ParserRestaurant:
 

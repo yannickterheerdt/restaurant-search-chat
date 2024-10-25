@@ -1,5 +1,5 @@
 from .parser import ParserArticle, ParserRestaurant, ParserURL
-from .data import RestaurantURL, RestaurantContent, RestaurantData, RestaurantSummary
+from .scheme import RestaurantURL, RestaurantContent, RestaurantData, RestaurantSummary
 from .summary import generate_summaries, splicegen
 from config import settings
 

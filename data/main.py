@@ -1,5 +1,5 @@
-from src.crud import *
-from src.data import *
+from .crud import *
+from .scheme import *
 import argparse
 
 def main():
