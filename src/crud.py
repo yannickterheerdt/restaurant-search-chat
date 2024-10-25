@@ -1,13 +1,13 @@
-from src.parser import *
-from src.data import RestaurantURL, RestaurantContent, RestaurantData, RestaurantSummary
+from .parser import ParserArticle, ParserRestaurant, ParserURL
+from .data import RestaurantURL, RestaurantContent, RestaurantData, RestaurantSummary
+from .summary import generate_summaries, splicegen
+from config import settings
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.engine import Engine
-import pandas as pd
-from config import settings
-from src.llm import generate_summaries
-from src.utils import splicegen
 
+import pandas as pd
 
 def add_restaurants(session: Session) -> None:
     subquery = session.query(RestaurantData.name).subquery()
@@ -28,14 +28,19 @@ def add_restaurants(session: Session) -> None:
 def add_restaurant_urls(session: Session) -> None:
     parsers = ParserURL.from_url()
     restaurantURLs = [RestaurantURL(**parser.get_dict()) for parser in parsers if parser.is_open()]
+    names = session.query(RestaurantURL.name).all()
+    names = {name[0] for name in names}
+    restaurantURLs = [url for url in restaurantURLs if url.name not in names]
     session.add_all(restaurantURLs)
     session.commit()
 
 def add_summaries(session: Session, engine: Engine) -> None:
     df = pd.read_sql(f'SELECT * FROM restaurantcontent', con=engine)
     df = df[df['content'].notna()]
+    names = session.query(RestaurantSummary.name).all()
+    names = {name[0] for name in names}
+    df = df[~df['name'].isin(names)]
     df_grouped = df.groupby('name')['content'].apply(' '.join).reset_index()
-    df_grouped = df_grouped[:10]
 
     maxchars = settings.MAX_TOKENS
     for index in splicegen(maxchars, df_grouped['content'].tolist()):
