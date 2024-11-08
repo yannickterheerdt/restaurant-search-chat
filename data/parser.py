@@ -63,13 +63,17 @@ class ParserRestaurant:
         return self.get_articles() is not None
     
     def get_features(self):
-        features = get_query(self.content, "//div[contains(@class,'kenmerken')]/div[contains(@class,'content')]/dl/dt/text()", sep = None)
-        values = get_query(self.content, "//div[contains(@class,'kenmerken')]/div[contains(@class,'content')]/dl/dd/text()", sep = None)
+        features = get_query(self.content, "//div[contains(@class,'content')]/dl/dt/text()", sep=None)
         
-        if features is None or values is None:
+        values = []
+        for dd in self.content.xpath("//div[contains(@class,'content')]/dl/dd"):
+            value = get_query(dd, ".//text()", sep=' ') 
+            values.append(value if value is not None else '')  
+
+        if features is None or not values:
             return {}
         
-        return {features[i]: values[i] for i in range(len(values))}
+        return {features[i]: values[i] for i in range(len(features))}
     
     def get_dict(self):
         features = self.get_features()
