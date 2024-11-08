@@ -4,7 +4,7 @@ from .summary import generate_summaries, splicegen
 from config import settings
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.engine import Engine
 
 import pandas as pd
@@ -50,3 +50,53 @@ def add_summaries(session: Session, engine: Engine) -> None:
         summaries = generate_summaries(content) 
         session.add_all([RestaurantSummary(name=name, summary=summary) for name, summary in zip(names, summaries)])
         session.commit()
+
+def restaurant_to_dict(restaurant):
+    return {
+        "name": restaurant.name,
+        "website_url": restaurant.website_url,
+        "instagram_url": restaurant.instagram_url,
+        "address": restaurant.address,
+        "meal_type": restaurant.meal_type,
+        "district": restaurant.district,
+        "restaurant_type": restaurant.restaurant_type,
+        "price_level": restaurant.price_level,
+        "summary": restaurant.summary.summary if restaurant.summary else None,
+        "image_url": restaurant.restaurant_url.image_url if restaurant.restaurant_url else None,
+        "content_url": restaurant.restaurant_url.content_url if restaurant.restaurant_url else None,
+    }
+
+def get_complete_restaurant_data(session: Session, names: list[str]) -> list[dict]:
+    restaurants = (
+        session.query(RestaurantData)
+        .options(
+            joinedload(RestaurantData.summary),
+            joinedload(RestaurantData.restaurant_url)
+        )
+        .filter(RestaurantData.name.in_(names))
+        .all()
+    )
+
+    restaurant_dict = {restaurant.name: restaurant_to_dict(restaurant) for restaurant in restaurants}
+
+    return [restaurant_dict[name] for name in names if name in restaurant_dict]
+    
+
+def get_unique_filter_values(session: Session, features: list[str]) -> dict[str, list[str]]:
+    unique_values = {}
+    for feature in features:
+        # Query distinct values for each feature
+        raw_values = session.query(getattr(RestaurantData, feature)).distinct().all()
+        
+        # Flatten, split by ', ', remove None and '' values, and strip whitespace
+        split_values = [
+            item.strip()  # Remove any surrounding whitespace
+            for value in raw_values if value[0] is not None
+            for item in value[0].split(',')  # Split by comma
+            if item.strip()  # Exclude empty strings after stripping
+        ]
+        
+        # Get unique values and sort them
+        unique_values[feature] = sorted(set(split_values))
+
+    return unique_values
