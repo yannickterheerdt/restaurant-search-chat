@@ -4,7 +4,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
+
 def get_page_source_urls() -> str:
+    """
+    Retrieves the page source of the main restaurant listing page, clicking the "meer laden" (load more) button until all results are loaded.
+
+    Returns:
+        str: The HTML source of the fully loaded restaurant listing page.
+    """
     cService = webdriver.ChromeService(executable_path=settings.CHROMEDRIVE_PATH)
     driver = webdriver.Chrome(service=cService)
     
@@ -29,6 +36,15 @@ def get_page_source_urls() -> str:
     return page_source
 
 def get_page_source_restaurant(url: str) -> str:
+    """
+    Retrieves the page source of an individual restaurant page in headless mode without images and other unnecessary content.
+
+    Args:
+        url (str): URL path of the restaurant page (relative to the BASE_URL).
+
+    Returns:
+        str: The HTML source of the restaurant page.
+    """
     options = webdriver.ChromeOptions()
     cService = webdriver.ChromeService(executable_path=settings.CHROMEDRIVE_PATH)
 
