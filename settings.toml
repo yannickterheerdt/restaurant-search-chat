@@ -12,13 +12,25 @@ PROMPT_SUMMARY_TEMPLATE = """Geef een samenvatting van de volgende informatie ov
             - Prijsniveau (zonder exacte prijzen te noemen)
             - Doelgroep (bijvoorbeeld gezinnen, studenten, zakelijke bijeenkomsten, etc.)
             Zorg ervoor dat de samenvatting kort en bondig is, bij voorkeur in één alinea."""
-PROMPT_SUMMARY_RELEVANCE = """
-Given the search query: '{query}', rank the following restaurant descriptions from most relevant to least relevant. Make sure that restaurants that are not relevant to the query are not included in the list. Provide the output as a single line of text with restaurant names, separated by commas:
+
+[search]
+CHROMA_DB_PATH = "./chroma/search"
+CHROMA_COLLECTION_NAME = "restaurant_summaries"
+EMBED_MODEL = "text-embedding-3-large"
+OPENAI_MODEL = "gpt-4o"
+OPENAI_TEMPERATUE = 0
+SYSTEM_PROMPT = """
+Given the search query: '{query}', rank the following restaurant descriptions from most relevant to least relevant. Include only restaurants that are reasonably relevant to the query, considering both direct matches and slight contextual relevance. 
+
+If a restaurant is entirely irrelevant to the query, exclude it from the list. However, ensure that the exclusion criteria are not too strict, and include restaurants with descriptions that have a reasonable connection to the query.
+
+Provide the output as a single line of text with restaurant names, separated by commas:
 
 {summaries}
 
 Return the list of relevant restaurant names in a single line, separated by commas. Use the exact name as it appears.
 """
+
 
 [chat]
 CHROMA_DB_PATH = "./chroma/chat"
