@@ -1,0 +1,96 @@
+ /* General styles */
+body {
+    background-color: #f5f5f5;
+}
+.container {
+    max-width: 900px;
+}
+
+/* Spinner */
+#loading-spinner {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1000;
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Custom button style */
+.btn-custom {
+    background-color: #006644;
+    border-color: #006644;
+    color: white;
+}
+
+/* Card styling */
+.card-custom {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    height: 350px;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* Filter section styling */
+.filter-section {
+    display: none;
+    background-color: #f0f8f5;
+    border: 1px solid #d1e7dd;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.filter-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+    color: #006644;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 0.3rem;
+    background-color: #e7f3ed;
+    transition: background-color 0.3s ease;
+}
+.filter-toggle-btn:hover {
+    background-color: #d1e7dd;
+}
+
+/* Checkbox styling */
+.filter-section h6 {
+    font-weight: 600;
+    color: #006644;
+}
+.form-check-label {
+    font-size: 1rem;
+    margin-left: 0.5rem;
+    color: #333;
+}
+.form-check-input {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+/* Spacing for filter options */
+.filter-option-group {
+    margin-bottom: 1rem;
+}
+.toggle-options {
+    font-size: 0.9rem;
+    color: #006644;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.toggle-options:hover {
+    text-decoration: underline;
+}
