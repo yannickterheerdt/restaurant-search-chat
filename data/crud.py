@@ -6,13 +6,39 @@ from config import settings
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.engine import Engine
+from sqlalchemy.sql.schema import Table
 
 import pandas as pd
 import logging
 
+from argparse import Namespace
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+from functools import wraps
+
+def task_runner(task_name):
+    """
+    A decorator to wrap tasks with descriptive print statements.
+
+    Args:
+        task_name (str): Name of the task being executed.
+    """
+    def decorator(task_function):
+        @wraps(task_function)
+        def wrapper(*args, **kwargs):
+            print(f"Starting: {task_name}...")
+            try:
+                task_function(*args, **kwargs)
+                print(f"Completed: {task_name}.")
+            except Exception as e:
+                print(f"Failed: {task_name}. Error: {e}")
+                raise  # Re-raise the exception for debugging or logging if needed
+        return wrapper
+    return decorator
+
+@task_runner("Adding new restaurants and related content")
 def add_restaurants(session: Session) -> None:
     """
     Adds new restaurants and related content to the database.
@@ -67,6 +93,7 @@ def add_restaurants(session: Session) -> None:
         logger.error(f"Error adding restaurants: {e}")
         session.rollback()
 
+@task_runner("Adding new restaurant URLs")
 def add_restaurant_urls(session: Session) -> None:
     """
     Adds new restaurant URLs to the database by parsing from an external source.
@@ -94,6 +121,7 @@ def add_restaurant_urls(session: Session) -> None:
         logger.error(f"Error adding restaurant URLs: {e}")
         session.rollback()
 
+@task_runner("Generating and adding summaries")
 def add_summaries(session: Session, engine: Engine) -> None:
     """
     Generates and adds summaries for restaurant content to the database.
@@ -217,3 +245,34 @@ def get_unique_filter_values(session: Session, features: list[str]) -> dict[str,
             logger.error(f"Error fetching unique filter values for '{feature}': {e}")
 
     return unique_values
+
+def clear_table(table: Table, engine: Engine) -> None:
+    """
+    Drops and recreates a specified table.
+
+    Args:
+        table (Table): SQLAlchemy table object to clear.
+        engine (Engine): SQLAlchemy engine instance.
+    """
+    print(f"Clearing table: {table.name}")
+    table.drop(engine, checkfirst=True)
+    table.create(engine, checkfirst=True)
+
+@task_runner("Clearing tables")
+def clear_tables(args: Namespace, engine: Engine) -> None:
+    """
+    Clears tables based on the specified arguments.
+
+    Args:
+        args (Any): Parsed command-line arguments.
+        engine (Engine): SQLAlchemy engine instance.
+    """
+    if args.add_restaurant_urls:
+        clear_table(RestaurantURL.__table__, engine)
+
+    if args.add_restaurants:
+        clear_table(RestaurantData.__table__, engine)
+        clear_table(RestaurantContent.__table__, engine)
+
+    if args.add_summaries:
+        clear_table(RestaurantSummary.__table__, engine)
