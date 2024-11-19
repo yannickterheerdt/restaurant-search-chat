@@ -167,3 +167,4 @@ cython_debug/
 chroma/
 *.bin
 *.pickle
+chromedriver/chromedriver.exe
