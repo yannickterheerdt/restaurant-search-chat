@@ -86,6 +86,9 @@ To enable restaurant search functionality:
    python -m apps.search.app
    ```
 
+3. **View the Application Locally**
+   Open a web browser and navigate to http://localhost:5000 to access the search application.
+
 ## **Chat Application**
 
 To enable chat functionality:
@@ -101,6 +104,9 @@ To enable chat functionality:
    ```bash
    streamlit run apps/chat/app.py
    ```
+
+3. **View the Application Locally**
+   After starting the app, Streamlit will provide a local URL in the terminal (e.g., http://localhost:8501). Open this URL in a web browser to use the chat application.
 
 
 ## **Project Structure**
